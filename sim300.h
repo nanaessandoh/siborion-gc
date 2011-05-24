@@ -442,7 +442,11 @@ switch (REGIM)
 			}
 
 		if (strstr(RESIV,&ALLSTR[_RING]))
-			{REGIM=Ath;}
+//			{REGIM=Ath;}
+			{
+			if (Resiv_Ring())
+				{REGIM=Dial_Ans;}
+			}
 
 		if (RES_SMS_NOM[0]>0)
 			{REGIM=SmsCom;}
