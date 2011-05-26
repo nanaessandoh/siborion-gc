@@ -1,167 +1,99 @@
-#include <pic.h>
-#include 	<string.h> 
+#include "gsm.h"
+#include <string.h>
 
-extern void Read_Sms_Nom(void);
-extern void Trans_Str_CR(const char *s);
+extern unsigned char REGIM;
 
+unsigned char CurOk;
+unsigned char CurError;
 
-#include	"include/var.c"
-#include	"delay.c"
-#include	"include/init.c"
-#include	"include/reg.c"
-//#include	"include/func.c"
-//#include	"include/priem.c"
-//#include	"include/pered.c"
-#include	"include/up_sim300.h"
-#include	"sim300.h"
-#include	"include/int.c"
-//#include	"include/dallas.h"
-
-
-
-//__CONFIG    (WDTDIS & PWRTEN & MCLREN & BOREN & LVPDIS & DATUNPROT & HS); 
-
-__CONFIG  (UNPROTECT &  UNPROTECT & UNPROTECT & BOREN & PWRTEN & WDTDIS & HS & MCLRDIS);
-
-
-void main(void)
+struct Gsm_Kom 
 {
+	unsigned const char *At;
+	unsigned const char *Ok;
+	unsigned const char *Error;
+	unsigned const char TimeOut;
+	unsigned const char Delay;
+	unsigned const char Repeat;
+	unsigned const char RegimOk;
+	unsigned const char RegimError;
+};
 
-Init();
-RS_Init();
+const struct Gsm_Kom GSM_KOM[]  =  
+{
+	{//ATE0
+	"ATE0\015",
+	"OK",
+	"ERROR",
+	1,
+	2,
+	10,
+	1,
+	0,
+	},
 
-//ON=10;
-WAIT_ANSWER=20;
-WAIT_RESTART=Max_Wait_Answer;
+	{//ATE0
+	"ATE0\015",
+	"OK",
+	"ERROR",
+	1,
+	2,
+	10,
+	2,
+	1,
+	},
+};
 
-In1_Tmp=In1;
-In2_Tmp=In2;
-
-for (;;)
+unsigned char AddByteOk(unsigned char Val)
+{
+	unsigned char cTmp;
+	if(GSM_KOM[REGIM].Ok[CurOk]==Val)
 	{
+		CurOk++;
+		if(CurOk >= strlen(GSM_KOM[REGIM].Ok))
+			cTmp = 2;
+		else
+			cTmp = 1;
+	}
+	else
+	{
+		CurOk = 0;
+		cTmp = 0;
+	}
+	return cTmp;
+}
 
+unsigned char AddByteError(unsigned char Val)
+{
+	unsigned char cTmp;
+	if(GSM_KOM[REGIM].Error[CurError]==Val)
+	{
+		CurError++;
+		if(CurError >= strlen(GSM_KOM[REGIM].Error))
+			cTmp = 2;
+		else
+			cTmp = 1;
+	}
+	else
+	{
+		CurOk = 0;
+		cTmp = 0;
+	}
+	return cTmp;
+}
 
-	if (MS03)
+void AddByte(unsigned char Val)
+{
+	if(AddByteOk(Val) == 2)
+	{
+		REGIM = GSM_KOM[REGIM].RegimOk;
+		CurOk = CurError = 0;
+	}
+	else
+	{
+		if(AddByteError(Val) == 2)
 		{
-
-		CLRWDT();
-
-		if (ALARM_DO&ALARM_MASK_DIAL)
-			{Led1=0;}
-		else
-			{Led1=1;}
-
-
-		if (!Rx)
-			{
-			if (RX_DELAY<20)
-				{
-				RX_DELAY++;
-				if (RX_DELAY==20)
-					{
-//					ON=10;
-					PwrKey=1;
-					DelayMs(250);
-					DelayMs(250);
-					DelayMs(250);
-					DelayMs(250);
-					DelayMs(250);
-					DelayMs(250);
-					DelayMs(250);
-					DelayMs(250);
-					DelayMs(250);
-					DelayMs(250);
-					DelayMs(250);
-					DelayMs(250);
-					PwrKey=0;
-					}
-				}
-			}
-		else
-			{RX_DELAY=0;}
-			
-		
-
-
-		MS03=0;
-
-//		if (ON>0)
-//			{
-//			ON--;
-//			if (ON>0)
-//				{PwrKey=1;}
-//			else
-//				{PwrKey=0;}
-//			}
-//		else
-
-//			{
-			if (!(REGIM==REGIM_TMP))
-				{
-				REGIM_TMP=REGIM;
-				WAIT_RESTART=Max_Wait_Answer;
-				if (REGIM<=Wait_Reg)
-					{WAIT_RESTART=60;}
-				}
-			else
-				{
-				if (WAIT_RESTART>0)
-					{WAIT_RESTART--;}
-				else
-					{
-					WAIT_RESTART=Max_Wait_Answer;
-					if (REGIM>Wait1)
-						{
-						REGIM=Ath;
-						WAIT_ANSWER=0;
-						}
-					else
-						{
-						PwrKey=1;
-						DelayMs(250);
-						DelayMs(250);
-						DelayMs(250);
-						PwrKey=0;
-						DelayMs(250);
-						DelayMs(250);
-						DelayMs(250);
-						DelayMs(250);
-						DelayMs(250);
-						DelayMs(250);
-
-						REGIM=Echo_Off;
-						}
-					}
-				}
-
-			if (WAIT_ANSWER==0)
-				{Peredacha();}
-			else
-				{
-				WAIT_ANSWER--;
-				if ((strstr(RESIV,&ALLSTR[_OK])) || strstr(RESIV,&ALLSTR[_ERROR]) || strstr(RESIV,&ALLSTR[_BUSY]) || strstr(RESIV, &ALLSTR[_NO_CAR]) || strstr(RESIV,&ALLSTR[_ECHO_OFF]) || strstr(RESIV,&ALLSTR[_SMS_TEXT]) || strstr(RESIV, &ALLSTR[_RING]) || strstr(RESIV,&ALLSTR[_RES_SMS]))
-					{Priem();}
-				}
-//			}
-		}
-
-
-
-	if (MS71)
-		{
-		MS71=0;
-		if (En_Transmit)
-			{
-//			Led1=1;
-			TXREG=(TRANSMIT[Kol_Transmit]);
-			if ((TRANSMIT[Kol_Transmit]==0x0D)||(TRANSMIT[Kol_Transmit]==0x1A))
-				{En_Transmit=0;}
-			Kol_Transmit++;
-			}
-		else
-			{
-//			Led1=0;
-			}
+			REGIM = GSM_KOM[REGIM].RegimError;
+			CurOk = CurError = 0;
 		}
 	}
 }

@@ -1,3 +1,6 @@
+#include <pic.h>
+#include "system.h"
+
 void Init(void)
 {
 //OPTION=0b10000111;
