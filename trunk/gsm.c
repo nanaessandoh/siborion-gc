@@ -21,7 +21,7 @@ extern void Trans_Str_CR(const char *s);
 
 //__CONFIG    (WDTDIS & PWRTEN & MCLREN & BOREN & LVPDIS & DATUNPROT & HS); 
 
-__CONFIG  (UNPROTECT &  UNPROTECT & UNPROTECT & BOREN & PWRTEN & WDTEN & HS & MCLRDIS);
+__CONFIG  (UNPROTECT &  UNPROTECT & UNPROTECT & BOREN & PWRTEN & WDTDIS & HS & MCLRDIS);
 
 
 void main(void)
@@ -47,9 +47,9 @@ for (;;)
 		CLRWDT();
 
 		if (ALARM_DO&ALARM_MASK_DIAL)
-			{Led1=1;}
-		else
 			{Led1=0;}
+		else
+			{Led1=1;}
 
 
 		if (!Rx)
