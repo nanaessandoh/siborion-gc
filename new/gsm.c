@@ -12,7 +12,7 @@ struct Gsm_Kom
 	unsigned const char *Ok;
 	unsigned const char *Error;
 	unsigned const char TimeOut;
-	unsigned const char Delay;
+	unsigned const char Pause;
 	unsigned const char Repeat;
 	unsigned const char RegimOk;
 	unsigned const char RegimError;
