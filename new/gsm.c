@@ -5,6 +5,7 @@ extern unsigned char REGIM;
 
 unsigned char CurOk;
 unsigned char CurError;
+signed char CurTransmit;
 
 struct Gsm_Kom 
 {
@@ -98,4 +99,19 @@ void AddByte(unsigned char Val)
 	}
 }
 
-
+void Transmit(void)
+{
+  if(CurTrans >= 0)
+  {
+    if(CurTrans >= strlen(GSM_KOM[REGIM].At)
+      CurTrans = (-1);
+    else
+    {
+      if(!TXIF)
+      {
+        TXREG = GSM_KOM[REGIM].At[CurTrans];
+        
+      }
+    }
+  }
+}
