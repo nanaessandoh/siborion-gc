@@ -1,5 +1,8 @@
 #include <pic.h>
 #include "gsm.h"
+#include "main.h"
+
+unsigned char DEL_TIM71;
 
 void interrupt
 Int(void)
@@ -22,6 +25,9 @@ if (RCIF)
 if (T0IF)
 	{
 	T0IF=0;
+	DEL_TIM71++;
+	if (DEL_TIM71==0)
+		MS71=1;
 	}
 
 if (INTF)
@@ -34,4 +40,3 @@ if (RABIF)
 if (TMR1IF)
 	{TMR1IF=0;}
 }
-

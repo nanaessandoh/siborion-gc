@@ -3,9 +3,16 @@ del build\*.hex
 del build\*.cof
 del build\*.lst
 
+del *.obj
+del *.hex
+del *.cof
+del *.lst
+del *.rlf
+del *.cce
+del *.sdb
 
-"C:\Program Files\HI-TECH Software\PICC\9.50\bin/picc.exe"  -16f690 -C -G -E -O"build/main.obj" -Zg  main.c
-"C:\Program Files\HI-TECH Software\PICC\9.50\bin/picc.exe"  -16f690 -C -G -E -O"build/gsm.obj"  -Zg  gsm.c
-"C:\Program Files\HI-TECH Software\PICC\9.50\bin/picc.exe"  -16f690 -C -G -E -O"build/init.obj" -Zg  init.c
-"C:\Program Files\HI-TECH Software\PICC\9.50\bin/picc.exe"  -16f690 -C -G -E -O"build/int.obj" -Zg  int.c
-"C:\Program Files\HI-TECH Software\PICC\9.50\bin/picc.exe" "build/main.obj" "build/gsm.obj" "build/init.obj" "build/int.obj" -M"build/main.map" -O"build/main.cof" -O"build/main.hex"  -16f690
+"C:\Program Files\HI-TECH Software\PICC\std\9.60\bin/picc.exe" -16f690 -C -G  -Zg  main.c --outdir=build
+"C:\Program Files\HI-TECH Software\PICC\std\9.60\bin/picc.exe" -16f690 -C -G  -Zg  gsm.c  --outdir=build
+"C:\Program Files\HI-TECH Software\PICC\std\9.60\bin/picc.exe" -16f690 -C -G  -Zg  init.c --outdir=build
+"C:\Program Files\HI-TECH Software\PICC\std\9.60\bin/picc.exe" -16f690 -C -G  -Zg  int.c  --outdir=build
+"C:\Program Files\HI-TECH Software\PICC\std\9.60\bin/picc.exe" -16f690 build/main.obj build/gsm.obj build/init.obj build/int.obj -Mout.map -Oout.cof -Oout.hex 
