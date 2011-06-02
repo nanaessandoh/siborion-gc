@@ -1,9 +1,9 @@
 #include <pic.h>
-#include <string.h>
 #include "gsm.h"
 #include "system.h"
 #include "main.h"
-
+//#pragma inline(strlen)
+#include <string.h>
 #define ToOk 1
 #define ToError 0
 #define S2 200
@@ -59,6 +59,14 @@ const struct Gsm_Kom GSM_KOM[]  =
     },
 };
 
+unsigned char strlen_main(const char * s)
+{
+    register const char *   cp;
+    cp = s;
+    while (*cp++)
+        continue;
+    return cp-s-1;
+}
 
 void ChangeRegim(unsigned char Val)
 {
@@ -129,15 +137,6 @@ void AddByte(unsigned char Val)
     }
 }
 
-unsigned char strlen_main(const char * s)
-{
-    register const char *   cp;
-
-    cp = s;
-    while (*cp++)
-        continue;
-    return cp-s-1;
-}
 
 unsigned char Power(void)
 {
