@@ -141,7 +141,6 @@ unsigned char strlen_main(const char * s)
 
 unsigned char Power(void)
 {
-
     if(ErrorCount > 10)
 	{
         RestartDelay = S2;
